@@ -1,6 +1,6 @@
 // websocket.cpp
-#include "websocket.h"
-#include "camera.h"
+#include "Websocket.h"
+#include "Camera.h"
 #include "CommandHandler.h"
 
 const char* ap_ssid = "ESP32-CAM";

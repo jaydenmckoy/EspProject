@@ -1,6 +1,6 @@
 // camera.cpp
-#include "camera.h"
-#include "websocket.h"
+#include "Camera.h"
+#include "Websocket.h"
 
 #define CHUNK_SIZE_BYTES 10
 // #define CHUNK_SIZE_BYTES 1000

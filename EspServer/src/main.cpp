@@ -1,6 +1,6 @@
 #include <Arduino.h>
-#include "camera.h"
-#include "websocket.h"
+#include "Camera.h"
+#include "Websocket.h"
 #include "CommandHandler.h"
 
 /*
