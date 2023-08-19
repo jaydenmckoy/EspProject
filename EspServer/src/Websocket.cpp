@@ -21,7 +21,7 @@ bool SendClientData(uint8_t * data, size_t size)
   }
 
   gClient->binary(data, size);
-  return false;
+  return true;
 }
 
 bool ClientConnected(void)
@@ -42,6 +42,10 @@ void onWebSocketEvent(AsyncWebSocket *wsServer, AsyncWebSocketClient *client, Aw
       break;
     case WS_EVT_DATA:
       Serial.println("Client data received");
+      // uint8_t someData[] = {1,2,3,4};
+      // client->binary(someData,4);
+      // delay(100);
+      // SendClientData(data,4);
       DataPacket_t pkt = {0};
       pkt.len = len;
       pkt.data = data;

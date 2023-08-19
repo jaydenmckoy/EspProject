@@ -1,76 +1,35 @@
-########################################################################
-####################### Makefile Template ##############################
-########################################################################
-
-# Compiler settings - Can be customized.
 CC = g++
-CXXFLAGS = -std=c++11 -Wall -Iinclude -Iwebsocketpp
-LDFLAGS = 
+CXXFLAGS = -std=c++11 -Wall -I./include -I./websocketpp
+LDFLAGS =
 
-SOURCES = src/main.cpp \
-			websocketpp/common/md5.cpp \
-			websocketpp/client/asio_client.cpp
+# Get a list of all source files in src/ and websocketpp/
+PROJECT_SOURCES = $(wildcard src/*.cpp)
+WEBSOCKETPP_SOURCES = $(wildcard websocketpp/common/*.cpp) $(wildcard websocketpp/client/*.cpp)
 
-OBJECTS = $(SOURCES:.cpp=.o)
+# Convert source filenames to object filenames in the obj/ directory
+PROJECT_OBJ = $(addprefix $(OBJDIR)/, $(notdir $(PROJECT_SOURCES:.cpp=.o)))
+WEBSOCKETPP_OBJ = $(addprefix $(OBJDIR)/, $(notdir $(WEBSOCKETPP_SOURCES:.cpp=.o)))
 
-
-# Makefile settings - Can be customized.
-APPNAME = EspClient
-EXT = .cpp
-SRCDIR = src
 OBJDIR = obj
-
-############## Do not change anything from here downwards! #############
-SRC = $(wildcard $(SRCDIR)/*$(EXT))
-OBJ = $(SRC:$(SRCDIR)/%$(EXT)=$(OBJDIR)/%.o)
-DEP = $(OBJ:$(OBJDIR)/%.o=%.d)
-# UNIX-based OS variables & settings
-RM = rm
-DELOBJ = $(OBJ)
-# Windows OS variables & settings
-DEL = del
-EXE = .exe
-WDELOBJ = $(SRC:$(SRCDIR)/%$(EXT)=$(OBJDIR)\\%.o)
-
-########################################################################
-####################### Targets beginning here #########################
-########################################################################
+APPNAME = EspClient
 
 all: $(APPNAME)
 
-# Builds the app
-$(APPNAME): $(OBJ)
+$(APPNAME): $(PROJECT_OBJ) $(WEBSOCKETPP_OBJ)
 	$(CC) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
-# Creates the dependecy rules
-%.d: $(SRCDIR)/%$(EXT)
-	@$(CPP) $(CFLAGS) $< -MM -MT $(@:%.d=$(OBJDIR)/%.o) >$@
-
-# Includes all .h files
--include $(DEP)
-
-# Building rule for .o files and its .c/.cpp in combination with all .h
-$(OBJDIR)/%.o: $(SRCDIR)/%$(EXT)
+$(OBJDIR)/%.o: src/%.cpp
+	@mkdir -p $(OBJDIR)
 	$(CC) $(CXXFLAGS) -o $@ -c $<
 
-################### Cleaning rules for Unix-based OS ###################
-# Cleans complete project
+$(OBJDIR)/%.o: websocketpp/common/%.cpp
+	@mkdir -p $(OBJDIR)
+	$(CC) $(CXXFLAGS) -o $@ -c $<
+
+$(OBJDIR)/%.o: websocketpp/client/%.cpp
+	@mkdir -p $(OBJDIR)
+	$(CC) $(CXXFLAGS) -o $@ -c $<
+
 .PHONY: clean
 clean:
-	$(RM) $(DELOBJ) $(DEP) $(APPNAME)
-
-# Cleans only all files with the extension .d
-.PHONY: cleandep
-cleandep:
-	$(RM) $(DEP)
-
-#################### Cleaning rules for Windows OS #####################
-# Cleans complete project
-.PHONY: cleanw
-cleanw:
-	$(DEL) $(WDELOBJ) $(DEP) $(APPNAME)$(EXE)
-
-# Cleans only all files with the extension .d
-.PHONY: cleandepw
-cleandepw:
-	$(DEL) $(DEP)
+	rm -rf $(OBJDIR) $(APPNAME)

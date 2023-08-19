@@ -1,5 +1,7 @@
 // CommandHandler.cpp
 #include "CommandHandler.h"
+#include "Telemetry.h"
+#include "TelemetryManager.h"
 
 TaskHandle_t commandTask;
 std::queue<DataPacket_t> commandQueue;
@@ -7,10 +9,19 @@ std::queue<DataPacket_t> commandQueue;
 void HandleCommand(CommandPacket_t * cmd)
 {
    eCommandApid apid = (eCommandApid) cmd->apid;
+   TelemetryPacket_t tm = {0};
+   bool sendStatus = false;
    switch (apid)
    {
       case PING_CMD_APID:
-         Serial.println("TAKE_IMAGE_CMD_APID received.");
+         Serial.println("PING_CMD_APID received.");
+         tm.apid = PING_TM_APID;
+         memcpy(tm.data,cmd->data,sizeof(cmd->data));
+         Serial.println("Delaying");
+         delay(500);
+         Serial.println("Sending telemetry");
+         sendStatus = SendTelemetry(&tm);
+         Serial.printf("Ping success: %d\n",sendStatus);
          break;
       case TAKE_IMAGE_CMD_APID:
          Serial.println("TAKE_IMAGE_CMD_APID received.");
