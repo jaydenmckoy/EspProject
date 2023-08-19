@@ -5,11 +5,12 @@
 #include <vector>
 #include <websocketpp/client.hpp>
 #include <websocketpp/config/asio_no_tls_client.hpp>
+#include "TelemetryManager.h"
 
 class WebsocketClient
 {
  public:
-   WebsocketClient();
+   WebsocketClient(TelemetryManager *manager);
    void RunWebSocket(void);
    void SendServerData(uint8_t *data, size_t size);
 
@@ -21,7 +22,7 @@ class WebsocketClient
 
    client c;
    client::connection_ptr con;
-   bool serverResponse;
+   TelemetryManager *tmManager;
 };
 
 #endif // WEBSOCKET_CLIENT_H

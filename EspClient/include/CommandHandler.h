@@ -22,6 +22,7 @@ class CommandHandler
 {
    public:
       CommandHandler(WebsocketClient *client);
+      ~CommandHandler();
       void SendCommand(eCommandApid apid);
    private:
       WebsocketClient *wsClient;

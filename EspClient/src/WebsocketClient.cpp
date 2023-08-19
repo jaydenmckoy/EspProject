@@ -5,7 +5,7 @@ using websocketpp::lib::bind;
 using websocketpp::lib::placeholders::_1;
 using websocketpp::lib::placeholders::_2;
 
-WebsocketClient::WebsocketClient() : serverResponse(false)
+WebsocketClient::WebsocketClient(TelemetryManager *manager) : tmManager(manager)
 {
    // Set logging to be pretty verbose (everything except message payloads)
    c.set_access_channels(websocketpp::log::alevel::all);
@@ -42,7 +42,11 @@ void WebsocketClient::ServerRxHandler(client *c, websocketpp::connection_hdl hdl
       printf("0x%02X ", rx_data[i]);
    }
    printf("\n");
-   serverResponse = true;
+   // Add data as Telemetry packet
+   DataPacket_t pkt = {0};
+   pkt.size = pld.size();
+   pkt.data = reinterpret_cast<uint8_t *>(&pld[0]);
+   tmManager->AddPacket(pkt);
 }
 
 void WebsocketClient::SendServerData(uint8_t *data, size_t size)

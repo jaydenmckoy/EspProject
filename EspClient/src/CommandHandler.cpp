@@ -5,6 +5,14 @@ CommandHandler::CommandHandler(WebsocketClient *client) : wsClient(client)
 
 }
 
+CommandHandler::~CommandHandler()
+{
+    // Clean up resources or perform cleanup operations
+    // Here you can release any dynamically allocated memory, close files, etc.
+    // For example:
+    // delete wsClient;
+}
+
 void CommandHandler::SendCommand(eCommandApid apid)
 {
    // Format command packet
