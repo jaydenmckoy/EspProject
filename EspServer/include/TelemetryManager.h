@@ -4,6 +4,6 @@
 
 #include "Telemetry.h"
 
-bool SendTelemetry(TelemetryPacket_t * tmpkt);
+bool SendTelemetry(TelemetryPacket_t *tmpkt);
 
 #endif

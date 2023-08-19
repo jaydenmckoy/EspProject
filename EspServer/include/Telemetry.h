@@ -10,7 +10,7 @@
 #pragma pack(1)
 struct DataPacket_t
 {
-   size_t   len;
+   size_t len;
    uint8_t *data;
 };
 
@@ -18,14 +18,14 @@ struct DataPacket_t
 struct CommandPacket_t
 {
    uint16_t apid;
-   uint8_t  data[COMMAND_PACKET_MAX_SIZE];
+   uint8_t data[COMMAND_PACKET_MAX_SIZE];
 };
 
 #pragma pack(1)
 struct TelemetryPacket_t
 {
    uint16_t apid;
-   uint8_t  data[TELEMETRY_PACKET_MAX_SIZE];
+   uint8_t data[TELEMETRY_PACKET_MAX_SIZE];
 };
 
 enum eCommandApid
