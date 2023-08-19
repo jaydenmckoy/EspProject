@@ -6,34 +6,18 @@
 #include <websocketpp/client.hpp>
 #include <websocketpp/config/asio_no_tls_client.hpp>
 
-#define COMMAND_PACKET_MAX_SIZE 3
-
-enum eCommandApid
-{
-   PING_CMD_APID,
-   TAKE_IMAGE_CMD_APID,
-};
-
-#pragma pack(1)
-struct CommandPacket_t
-{
-   uint16_t apid;
-   uint8_t data[COMMAND_PACKET_MAX_SIZE];
-};
-
 class WebsocketClient
 {
  public:
    WebsocketClient();
-   void runWebSocket(void);
-   void ping(void);
+   void RunWebSocket(void);
+   void SendServerData(uint8_t *data, size_t size);
 
  private:
    typedef websocketpp::client<websocketpp::config::asio_client> client;
    typedef websocketpp::config::asio_client::message_type::ptr message_ptr;
 
-   void sendCommand(CommandPacket_t *cmd);
-   void onMessage(client *c, websocketpp::connection_hdl hdl, message_ptr msg);
+   void ServerRxHandler(client *c, websocketpp::connection_hdl hdl, message_ptr msg);
 
    client c;
    client::connection_ptr con;

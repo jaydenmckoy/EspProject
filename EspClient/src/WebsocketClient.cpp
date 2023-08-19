@@ -16,7 +16,7 @@ WebsocketClient::WebsocketClient() : serverResponse(false)
 
    // Register message handler
    c.set_message_handler([this](websocketpp::connection_hdl hdl,
-                                message_ptr msg) { onMessage(&c, hdl, msg); });
+                                message_ptr msg) { ServerRxHandler(&c, hdl, msg); });
 
    // Connect to Server websocket
    websocketpp::lib::error_code ec;
@@ -29,38 +29,9 @@ WebsocketClient::WebsocketClient() : serverResponse(false)
    c.connect(con);
 }
 
-void WebsocketClient::runWebSocket(void) { c.run(); }
+void WebsocketClient::RunWebSocket(void) { c.run(); }
 
-void WebsocketClient::ping(void)
-{
-   CommandPacket_t cmd;
-   cmd.apid = PING_CMD_APID;
-
-   for (uint8_t i = 0; i < COMMAND_PACKET_MAX_SIZE; i++) {
-      cmd.data[i] = i + 1;
-   }
-
-   while (!serverResponse) {
-      printf("Sending ping.\n");
-      sendCommand(&cmd);
-      std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-   }
-}
-
-void WebsocketClient::sendCommand(CommandPacket_t *cmd)
-{
-   try
-   {
-      c.send(con, reinterpret_cast<uint8_t *>(cmd), sizeof(CommandPacket_t),
-             websocketpp::frame::opcode::binary);
-   }
-   catch (const std::exception &e)
-   {
-      std::cout << "WebSocket Exception: " << e.what() << std::endl;
-   }
-}
-
-void WebsocketClient::onMessage(client *c, websocketpp::connection_hdl hdl,
+void WebsocketClient::ServerRxHandler(client *c, websocketpp::connection_hdl hdl,
                                 message_ptr msg)
 {
    std::string pld = msg->get_payload();
@@ -73,3 +44,16 @@ void WebsocketClient::onMessage(client *c, websocketpp::connection_hdl hdl,
    printf("\n");
    serverResponse = true;
 }
+
+void WebsocketClient::SendServerData(uint8_t *data, size_t size)
+{
+   try
+   {
+      c.send(con, data, size,websocketpp::frame::opcode::binary);
+   }
+   catch (const std::exception &e)
+   {
+      std::cout << "WebSocket Exception: " << e.what() << std::endl;
+   }
+}
+
