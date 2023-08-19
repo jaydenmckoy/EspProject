@@ -8,18 +8,21 @@
 
 #define COMMAND_PACKET_MAX_SIZE 3
 
-enum eCommandApid {
+enum eCommandApid
+{
     PING_CMD_APID,
-    TAKE_IMAGE_CMD_APID
+    TAKE_IMAGE_CMD_APID,
 };
 
 #pragma pack(1)
-struct CommandPacket_t {
+struct CommandPacket_t
+{
     uint16_t apid;
     uint8_t data[COMMAND_PACKET_MAX_SIZE];
 };
 
-class WebsocketClient {
+class WebsocketClient
+{
 public:
     WebsocketClient();
     void runWebSocket(void);
@@ -30,7 +33,7 @@ private:
     typedef websocketpp::config::asio_client::message_type::ptr message_ptr;
 
     void sendCommand(CommandPacket_t *cmd);
-    void onMessage(client* c, websocketpp::connection_hdl hdl, message_ptr msg);
+    void onMessage(client *c, websocketpp::connection_hdl hdl, message_ptr msg);
 
     client c;
     client::connection_ptr con;

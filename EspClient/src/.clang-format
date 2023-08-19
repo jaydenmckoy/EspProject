@@ -1,0 +1,6 @@
+---
+Language:        Cpp
+BasedOnStyle:    LLVM
+IndentWidth:     3
+UseTab:          Never
+FunctionDefinitionOpeningBrace: NextLine
