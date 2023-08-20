@@ -4,6 +4,8 @@
 #include "TelemetryManager.h"
 #include "Websocket.h"
 
+#include "FtpManager.h"
+
 // #define CHUNK_SIZE_BYTES 10
 #define CHUNK_SIZE_BYTES 1000
 uint8_t imageId = 0;
@@ -77,7 +79,8 @@ void TakeImage(void)
       Serial.printf("Height of the buffer in pixels: %d\n", fb->height);
       Serial.printf("Format of the pixel data:       %d\n", fb->format);
 
-      TransferImage(fb);
+      WriteFile(fb->buf,fb->len);
+      // TransferImage(fb);
 
       esp_camera_fb_return(fb);
    }
