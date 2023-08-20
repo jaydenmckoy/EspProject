@@ -35,13 +35,13 @@ void WebsocketClient::ServerRxHandler(client *c, websocketpp::connection_hdl hdl
                                 message_ptr msg)
 {
    std::string pld = msg->get_payload();
-   const uint8_t *rx_data = reinterpret_cast<const uint8_t *>(&pld[0]);
-   printf("Received data len: %ld\n", pld.size());
-   printf("Data: ");
-   for (size_t i = 0; i < pld.size(); i++) {
-      printf("0x%02X ", rx_data[i]);
-   }
-   printf("\n");
+   // const uint8_t *rx_data = reinterpret_cast<const uint8_t *>(&pld[0]);
+   // printf("Received data len: %ld\n", pld.size());
+   // printf("Data: ");
+   // for (size_t i = 0; i < pld.size(); i++) {
+   //    printf("0x%02X ", rx_data[i]);
+   // }
+   // printf("\n");
    // Add data as Telemetry packet
    DataPacket_t pkt = {0};
    pkt.size = pld.size();

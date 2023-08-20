@@ -5,8 +5,9 @@
 #include <queue>
 #include <mutex>
 #include <condition_variable>
+#include "ImageTransferHandler.h"
 
-#define TELEMETRY_PACKET_SIZE_MAX 100
+#define TELEMETRY_PACKET_SIZE_MAX 1000
 
 
 #pragma pack(1)
@@ -32,7 +33,7 @@ enum eTelemetryApid
 class TelemetryManager
 {
    public:
-      TelemetryManager(/* args */);
+      TelemetryManager(ImageTransferHandler *imgHandler);
       ~TelemetryManager();
       void AddPacket(const DataPacket_t &pkt);
       void Task(void);
@@ -42,6 +43,7 @@ class TelemetryManager
       std::queue<TelemetryPacket_t> tmQueue;
       std::mutex queueMutex;
       std::condition_variable queueNotEmpty;
+      ImageTransferHandler *imageHandler;
 };
 
 

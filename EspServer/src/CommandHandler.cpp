@@ -1,5 +1,6 @@
 // CommandHandler.cpp
 #include "CommandHandler.h"
+#include "Camera.h"
 #include "Telemetry.h"
 #include "TelemetryManager.h"
 
@@ -24,6 +25,7 @@ void HandleCommand(CommandPacket_t *cmd)
       break;
    case TAKE_IMAGE_CMD_APID:
       Serial.println("TAKE_IMAGE_CMD_APID received.");
+      TakeImage();
       break;
 
    default:
@@ -74,7 +76,7 @@ void CommandHandlerSetup(void)
    // Create the command handling task
    xTaskCreatePinnedToCore(Task,             // Task function
                            "CommandHandler", // Task name
-                           4096,             // Stack size (bytes)
+                           8192,             // Stack size (bytes)
                            NULL,             // Task parameter
                            1,                // Priority
                            &commandTask,     // Task handle

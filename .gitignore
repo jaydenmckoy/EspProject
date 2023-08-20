@@ -37,3 +37,6 @@ EspServer/.vscode/.browse.c_cpp.db*
 EspServer/.vscode/c_cpp_properties.json
 EspServer/.vscode/launch.json
 EspServer/.vscode/ipch
+
+# Images
+*.jpg

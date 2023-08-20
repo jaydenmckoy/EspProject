@@ -1,7 +1,7 @@
 #include "TelemetryManager.h"
 
 
-TelemetryManager::TelemetryManager(/* args */)
+TelemetryManager::TelemetryManager(ImageTransferHandler *imgHandler) : imageHandler(imgHandler)
 {
 }
 
@@ -11,13 +11,19 @@ TelemetryManager::~TelemetryManager()
 
 void TelemetryManager::AddPacket(const DataPacket_t &pkt)
 {
-   printf("TelemetryManager::AddPacket: ");
+   if(pkt.size > sizeof(TelemetryPacket_t))
+   {
+      printf("TelemetryManager::AddPacket: data packet too large to unpack into telemetry packet (%ld > %ld)\n",pkt.size,sizeof(TelemetryPacket_t));
+      return;
+   }
+   // printf("TelemetryManager::AddPacket: ");
    std::lock_guard<std::mutex> lock(queueMutex);
    TelemetryPacket_t tmpkt;
-   memcpy(&tmpkt,pkt.data,pkt.size);
+   memcpy(&tmpkt,pkt.data,TELEMETRY_PACKET_SIZE_MAX);
+   // printf("\n-pushing\n");
    tmQueue.push(tmpkt);
+   // printf("packet pushed.\n");
    queueNotEmpty.notify_one();//queueNotEmpty.notify_one();
-   printf("packet pushed.\n");
 }
 
 void TelemetryManager::Task(void)
@@ -27,7 +33,7 @@ void TelemetryManager::Task(void)
       // printf("TelemetryManager::Task: waiting on queueNotEmpty\n");
       std::unique_lock<std::mutex> lock(queueMutex);
       queueNotEmpty.wait(lock, [this] { return !tmQueue.empty(); });
-
+      printf("TelemetryManager::Task: packet received.");
       const TelemetryPacket_t tm_pkt = tmQueue.front();
       tmQueue.pop();
       lock.unlock();
@@ -52,6 +58,10 @@ void TelemetryManager::ProcessTelemetry(const TelemetryPacket_t &tm_pkt)
       }
       case TAKE_IMAGE_TM_APID:
       {
+         printf("TAKE_IMAGE_TM_APID: ");
+         ImagePacket_t imgPkt = {0};
+         memcpy((uint8_t *) &imgPkt, tm_pkt.data, sizeof(ImagePacket_t));
+         imageHandler->ProcessImageTelemetry(&imgPkt);
          break;
       }
       

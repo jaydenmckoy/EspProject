@@ -1,9 +1,11 @@
 // camera.cpp
 #include "Camera.h"
+#include "Telemetry.h"
+#include "TelemetryManager.h"
 #include "Websocket.h"
 
-#define CHUNK_SIZE_BYTES 10
-// #define CHUNK_SIZE_BYTES 1000
+// #define CHUNK_SIZE_BYTES 10
+#define CHUNK_SIZE_BYTES 1000
 uint8_t imageId = 0;
 
 #pragma pack(1)
@@ -18,6 +20,10 @@ struct ImagePacket_t
 
 void TransferImage(camera_fb_t *fb)
 {
+   Serial.println("Initializing image transfer...");
+   
+   TelemetryPacket_t tm_pkt = {0};
+   tm_pkt.apid = TAKE_IMAGE_TM_APID;
    ImagePacket_t imgPkt;
    imgPkt.id = imageId;
    imgPkt.seqNum = 0;
@@ -30,23 +36,28 @@ void TransferImage(camera_fb_t *fb)
 
    for (imgPkt.seqNum = 0; imgPkt.seqNum < imgPkt.seqLen; imgPkt.seqNum++)
    {
-      Serial.printf("Sending packet %d of %d.\n", imgPkt.seqNum, imgPkt.seqLen);
+      Serial.printf("Sending packet %d of %d.\n", imgPkt.seqNum, imgPkt.seqLen-1);
+
+      // Copy image data to image packet
       memcpy(imgPkt.data, dataBuf, CHUNK_SIZE_BYTES);
-      txRes = SendClientData((uint8_t *)&imgPkt, imgPkt.dataLen);
+      // Copy image packet to telemetry packet
+      memcpy(tm_pkt.data,(uint8_t *) &imgPkt, sizeof(ImagePacket_t));
+      // Send telemetry packet
+      txRes = SendTelemetry(&tm_pkt);
       if (txRes == false) {
          Serial.println("Aborting image transfer.");
          return;
       }
       dataBuf += CHUNK_SIZE_BYTES;
 
-      Serial.printf("imgPkt.id        = %d\n", imgPkt.id);
-      Serial.printf("imgPkt.seqNum    = %d\n", imgPkt.seqNum);
-      Serial.printf("imgPkt.seqLen    = %d\n", imgPkt.seqLen);
-      Serial.printf("imgPkt.dataLen   = %d\n", imgPkt.dataLen);
-      int i;
-      for (i = 0; i < CHUNK_SIZE_BYTES; i++)
-         Serial.printf("[%d]: %02X\n", i, imgPkt.data[i]);
-      return;
+      // Serial.printf("imgPkt.id        = %d\n", imgPkt.id);
+      // Serial.printf("imgPkt.seqNum    = %d\n", imgPkt.seqNum);
+      // Serial.printf("imgPkt.seqLen    = %d\n", imgPkt.seqLen);
+      // Serial.printf("imgPkt.dataLen   = %d\n", imgPkt.dataLen);
+      // int i;
+      // for (i = 0; i < CHUNK_SIZE_BYTES; i++)
+      //    Serial.printf("[%d]: %02X\n", i, imgPkt.data[i]);
+      // return;
 
       delay(1000);
    }

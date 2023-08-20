@@ -1,5 +1,6 @@
 CC = g++
-CXXFLAGS = -std=c++11 -Wall -I./include -I/usr/include/websocketpp
+CXXFLAGS = -std=c++11 -Wall -I./include -I/usr/include/websocketpp -I/usr/include/opencv4
+LDFLAGS = -lopencv_core -lopencv_imgcodecs
 
 # Get a list of all source files in src/ and websocketpp/
 PROJECT_SOURCES = $(wildcard src/*.cpp)

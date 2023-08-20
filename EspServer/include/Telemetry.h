@@ -5,7 +5,7 @@
 #include <Arduino.h>
 
 #define COMMAND_PACKET_MAX_SIZE 3
-#define TELEMETRY_PACKET_MAX_SIZE 3
+#define TELEMETRY_PACKET_MAX_SIZE 1000
 
 #pragma pack(1)
 struct DataPacket_t
