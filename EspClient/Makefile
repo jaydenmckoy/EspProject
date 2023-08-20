@@ -1,6 +1,5 @@
 CC = g++
-CXXFLAGS = -std=c++11 -Wall -I./include -I./websocketpp
-LDFLAGS =
+CXXFLAGS = -std=c++11 -Wall -I./include -I/usr/include/websocketpp
 
 # Get a list of all source files in src/ and websocketpp/
 PROJECT_SOURCES = $(wildcard src/*.cpp)
