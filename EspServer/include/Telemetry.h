@@ -31,6 +31,7 @@ struct TelemetryPacket_t
 enum eCommandApid
 {
    PING_CMD_APID,
+   TAKE_TEST_IMAGE_CMD_APID,
    TAKE_IMAGE_CMD_APID,
 };
 

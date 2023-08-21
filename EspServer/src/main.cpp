@@ -1,9 +1,9 @@
+#include "main.h"
 #include "Camera.h"
 #include "CommandHandler.h"
+#include "FileManager.h"
 #include "Websocket.h"
-#include <Arduino.h>
 
-#include "FtpManager.h"
 
 /*
 sudo chmod a+rw /dev/ttyUSB0
@@ -19,7 +19,7 @@ void setup()
    CameraSetup();
    WebsocketSetup();
 
-   FtpSetup();
+   FileManager::Setup();
 
    // Setup end
    Serial.println("\nSetup complete.\n");
@@ -27,7 +27,6 @@ void setup()
 
 void loop()
 {
-   // main();
-   FtpHandle();
+   FileManager::Task();
    delay(10);
 }

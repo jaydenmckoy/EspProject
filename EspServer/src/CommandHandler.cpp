@@ -23,6 +23,10 @@ void HandleCommand(CommandPacket_t *cmd)
       sendStatus = SendTelemetry(&tm);
       Serial.printf("Ping success: %d\n", sendStatus);
       break;
+   case TAKE_TEST_IMAGE_CMD_APID:
+      Serial.println("GET_TEST_IMAGE_CMD_APID received.");
+      TakeImage();
+      break;
    case TAKE_IMAGE_CMD_APID:
       Serial.println("TAKE_IMAGE_CMD_APID received.");
       TakeImage();
