@@ -5,6 +5,8 @@
 #include <queue>
 #include <mutex>
 #include <condition_variable>
+#include <iostream>
+#include <fstream>
 #include "ImageTransferHandler.h"
 
 #define TELEMETRY_PACKET_SIZE_MAX 1000
@@ -28,6 +30,9 @@ enum eTelemetryApid
 {
    PING_TM_APID,
    TAKE_IMAGE_TM_APID,
+   FILE_TX_START_TM_APID,
+   FILE_TX_END_TM_APID,
+   GET_FILE_TM_APID,
 };
 
 class TelemetryManager
@@ -44,6 +49,7 @@ class TelemetryManager
       std::mutex queueMutex;
       std::condition_variable queueNotEmpty;
       ImageTransferHandler *imageHandler;
+      std::ofstream file;
 };
 
 

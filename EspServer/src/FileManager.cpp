@@ -4,6 +4,9 @@
 #include "ESP-FTP-Server-Lib.h"
 #include "FTPFilesystem.h"
 
+#include "Telemetry.h"
+#include "TelemetryManager.h"
+
 #define SD_CS_PIN 13  // Use the GPIO pin number you've connected to the CS pin
 
 
@@ -18,6 +21,59 @@ void FileManager::Task(void)
 {
    // FTP server handle
    ftpServer.handle();
+}
+
+void FileManager::GetFile(void)
+{
+   File file = SD.open("/test_image.jpg");
+
+   if (file) {
+      Serial.println("File opened successfully:");
+
+      size_t fileSize = file.size();
+      // uint8_t * buf;
+      // size_t bytesRead = file.read(buf, fileSize);
+      // Serial.printf("File size: %ld\n",fileSize);
+      // Serial.printf("Bytes read: %ld\n",bytesRead);
+      // Start transfer
+      TelemetryPacket_t pkt = {0};
+      pkt.apid = FILE_TX_START_TM_APID;
+      SendTelemetryPacket(&pkt);
+      // Send data
+      pkt.apid = GET_FILE_TM_APID;
+      size_t bytesSent = 0;
+      int numBytes;
+      size_t pktSizeMax = TELEMETRY_PACKET_MAX_SIZE;
+      Serial.printf("Sending data:\n");
+      Serial.printf("File size: %ld\n",fileSize);
+      size_t numPkts = fileSize/pktSizeMax;
+      Serial.printf("Number of packets: %ld\n", numPkts);
+      size_t i = 0;
+      while(bytesSent < fileSize)
+      {
+         Serial.printf("Sending packet %ld of %ld\n",i,numPkts);
+         numBytes = std::min(fileSize - bytesSent, pktSizeMax);
+         file.read(pkt.data,numBytes);
+         if(SendTelemetryPacket(&pkt) == false)
+         {
+            Serial.println("Error sending telemetry. Aborting.");
+            break;
+         }
+         bytesSent += numBytes;
+         delay(500);
+         i++;
+      }
+      // SendTelemetry(GET_FILE_TM_APID,buf,fileSize);
+      // End transfer
+      delay(500);
+      pkt.apid = FILE_TX_END_TM_APID;
+      SendTelemetryPacket(&pkt);
+
+      file.close();
+      Serial.println("\nFile closed");
+   } else {
+      Serial.println("Error opening file");
+   }
 }
 
 void FileManager::WriteFile(uint8_t* buf, size_t size, std::string filename)

@@ -19,6 +19,7 @@ class FileManager
       static void WriteFile(uint8_t* buf, size_t size, std::string filename);
       static bool MakeDir(std::string dir);
       static void WriteTestFile(void);
+      static void GetFile(void);
    private:
       static FTPServer ftpServer;
 };

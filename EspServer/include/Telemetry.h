@@ -32,6 +32,8 @@ enum eCommandApid
 {
    PING_CMD_APID,
    TAKE_TEST_IMAGE_CMD_APID,
+   GET_TEST_IMAGE_CMD_APID,
+   GET_FILE_CMD_APID,
    TAKE_IMAGE_CMD_APID,
 };
 
@@ -39,6 +41,9 @@ enum eTelemetryApid
 {
    PING_TM_APID,
    TAKE_IMAGE_TM_APID,
+   FILE_TX_START_TM_APID,
+   FILE_TX_END_TM_APID,
+   GET_FILE_TM_APID,
 };
 
 #endif

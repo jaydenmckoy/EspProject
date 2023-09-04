@@ -43,7 +43,7 @@ void TransferImage(camera_fb_t *fb)
       // Copy image packet to telemetry packet
       memcpy(tm_pkt.data,(uint8_t *) &imgPkt, sizeof(ImagePacket_t));
       // Send telemetry packet
-      txRes = SendTelemetry(&tm_pkt);
+      txRes = SendTelemetryPacket(&tm_pkt);
       if (txRes == false) {
          Serial.println("Aborting image transfer.");
          return;
@@ -93,6 +93,32 @@ void TakeImage(void)
    else
    {
       Serial.println("Error capturing image.");
+   }
+}
+
+void GetImage(void)
+{
+   File file = SD.open("/test_image.jpg");
+
+   if (file) {
+      Serial.println("File opened successfully:");
+
+      size_t fileSize = file.size();
+      camera_fb_t fb;
+      // uint8_t buffer[fileSize];
+
+      if (file.read(fb.buf, fileSize) == fileSize) {
+         // Serial.write(buffer, fileSize);
+         fb.len = fileSize;
+         TransferImage(&fb);
+      } else {
+         Serial.println("Error reading file");
+      }
+
+      file.close();
+      Serial.println("\nFile closed");
+   } else {
+      Serial.println("Error opening file");
    }
 }
 

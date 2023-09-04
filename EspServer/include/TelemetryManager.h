@@ -4,6 +4,7 @@
 
 #include "Telemetry.h"
 
-bool SendTelemetry(TelemetryPacket_t *tmpkt);
+bool SendTelemetryPacket(TelemetryPacket_t *tmpkt);
+bool SendTelemetry(eTelemetryApid apid, uint8_t * buf, size_t size);
 
 #endif

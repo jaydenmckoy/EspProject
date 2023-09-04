@@ -6,6 +6,7 @@
 #include <Arduino.h>
 
 void TakeImage(void);
+void GetImage(void);
 void TransferImage(camera_fb_t *fb);
 void CameraSetup(void);
 

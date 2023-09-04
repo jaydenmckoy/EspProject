@@ -1,6 +1,7 @@
 // CommandHandler.cpp
 #include "CommandHandler.h"
 #include "Camera.h"
+#include "FileManager.h"
 #include "Telemetry.h"
 #include "TelemetryManager.h"
 
@@ -20,12 +21,20 @@ void HandleCommand(CommandPacket_t *cmd)
       Serial.println("Delaying");
       delay(500);
       Serial.println("Sending telemetry");
-      sendStatus = SendTelemetry(&tm);
+      sendStatus = SendTelemetryPacket(&tm);
       Serial.printf("Ping success: %d\n", sendStatus);
       break;
    case TAKE_TEST_IMAGE_CMD_APID:
-      Serial.println("GET_TEST_IMAGE_CMD_APID received.");
+      Serial.println("TAKE_TEST_IMAGE_CMD_APID received.");
       TakeImage();
+      break;
+   case GET_TEST_IMAGE_CMD_APID:
+      Serial.println("GET_TEST_IMAGE_CMD_APID received.");
+      GetImage();
+      break;
+   case GET_FILE_CMD_APID:
+      Serial.println("GET_FILE_CMD_APID received.");
+      FileManager::GetFile();
       break;
    case TAKE_IMAGE_CMD_APID:
       Serial.println("TAKE_IMAGE_CMD_APID received.");

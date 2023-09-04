@@ -27,6 +27,8 @@ void CommandHandler::SendCommand(eCommandApid apid)
          break;
       case TAKE_TEST_IMAGE_CMD_APID:
          break;
+      case GET_TEST_IMAGE_CMD_APID:
+         break;
       case TAKE_IMAGE_CMD_APID:
          break;
       default:
