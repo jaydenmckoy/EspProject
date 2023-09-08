@@ -11,6 +11,23 @@ TelemetryManager& TelemetryManager::GetInstance(void)
    return instance;
 }
 
+void TelemetryManager::CreatePacket(const eTelemetryApid apid)
+{
+   memset(pktBuf,0,TELEMETRY_PACKET_MAX_SIZE);
+   pktHeader.apid = apid;
+   pktHeader.length = 0;
+}
+void TelemetryManager::AddParameter(const uint8_t * param, const uint32_t paramLen)
+{
+   memcpy(&pktBuf[sizeof(pktHeader) + pktHeader.length], param, paramLen);
+   pktHeader.length += paramLen;
+}
+
+bool TelemetryManager::SendTelemetryPacket(void)
+{
+   memcpy(pktBuf, (uint8_t *) &pktHeader, sizeof(pktHeader));
+   return SendClientData(pktBuf, sizeof(pktHeader) + pktHeader.length);
+}
 
 bool TelemetryManager::SendTelemetryPacket(TelemetryPacket_t * tmpkt)
 {

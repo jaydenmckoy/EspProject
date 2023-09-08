@@ -19,12 +19,16 @@ void HandleCommand(CommandPacket_t *cmd)
    switch (apid) {
    case PING_CMD_APID:
       Serial.println("PING_CMD_APID received.");
-      tm.apid = PING_TM_APID;
-      memcpy(tm.data, cmd->data, sizeof(cmd->data));
+      tmMgr.CreatePacket(PING_TM_APID);
+      int i;
+      for(i=0; i < 8; i++)
+      {
+         tmMgr.AddParameter(&cmd->data[i],1);
+      }
       Serial.println("Delaying");
       delay(500);
       Serial.println("Sending telemetry");
-      sendStatus = tmMgr.SendTelemetryPacket(&tm);
+      sendStatus = tmMgr.SendTelemetryPacket();
       Serial.printf("Ping success: %d\n", sendStatus);
       break;
    case TAKE_TEST_IMAGE_CMD_APID:

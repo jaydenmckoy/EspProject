@@ -11,15 +11,15 @@ TelemetryManager::~TelemetryManager()
 
 void TelemetryManager::AddPacket(const DataPacket_t &pkt)
 {
-   if(pkt.size > sizeof(TelemetryPacket_t))
+   if(pkt.size > TELEMETRY_PACKET_SIZE_MAX)
    {
-      printf("TelemetryManager::AddPacket: data packet too large to unpack into telemetry packet (%ld > %ld)\n",pkt.size,sizeof(TelemetryPacket_t));
+      printf("TelemetryManager::AddPacket: data packet too large to unpack into telemetry packet (%ld > %ld)\n",pkt.size,TELEMETRY_PACKET_SIZE_MAX);
       return;
    }
    // printf("TelemetryManager::AddPacket: ");
    std::lock_guard<std::mutex> lock(queueMutex);
    TelemetryPacket_t tmpkt;
-   memcpy(&tmpkt,pkt.data,TELEMETRY_PACKET_SIZE_MAX);
+   memcpy((uint8_t *)&tmpkt,pkt.data,pkt.size);
    // printf("\n-pushing\n");
    tmQueue.push(tmpkt);
    // printf("packet pushed.\n");
@@ -39,6 +39,9 @@ void TelemetryManager::Task(void)
       lock.unlock();
 
       // Process the data here
+      printf("TelemetryManager::Task: packet received.\n");
+      printf("-apid   = %d\n",tm_pkt.apid);
+      printf("-length = %d\n",tm_pkt.length);
       ProcessTelemetry(tm_pkt);
    }
 }
@@ -51,8 +54,8 @@ void TelemetryManager::ProcessTelemetry(const TelemetryPacket_t &tm_pkt)
       case PING_TM_APID:
       {
          printf("PING_TM_APID: ");
-         int i;
-         for(i=0; i < TELEMETRY_PACKET_SIZE_MAX; i++) printf("0x%02X ",tm_pkt.data[i]);
+         uint32_t i;
+         for(i=0; i < tm_pkt.length; i++) printf("0x%02X ",tm_pkt.data[i]);
          printf("\n");
          break;
       }

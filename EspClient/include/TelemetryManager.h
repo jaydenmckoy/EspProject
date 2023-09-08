@@ -9,8 +9,7 @@
 #include <fstream>
 #include "ImageTransferHandler.h"
 
-#define TELEMETRY_PACKET_SIZE_MAX 1000
-
+#define TELEMETRY_PACKET_DATA_MAX_SIZE 1000
 
 #pragma pack(1)
 struct DataPacket_t
@@ -23,7 +22,16 @@ struct DataPacket_t
 struct TelemetryPacket_t
 {
    uint16_t apid;
-   uint8_t  data[TELEMETRY_PACKET_SIZE_MAX];
+   uint32_t length;
+   uint8_t  data[TELEMETRY_PACKET_DATA_MAX_SIZE];
+};
+#define TELEMETRY_PACKET_SIZE_MAX sizeof(TelemetryPacketHeader_t) + TELEMETRY_PACKET_DATA_MAX_SIZE
+
+#pragma pack(1)
+struct TelemetryPacketHeader_t
+{
+   uint16_t  apid;
+   uint32_t  length;
 };
 
 enum eTelemetryApid
