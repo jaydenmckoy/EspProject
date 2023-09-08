@@ -22,6 +22,10 @@ void TransferImage(camera_fb_t *fb)
 {
    Serial.println("Initializing image transfer...");
    
+   // Get instance of TelemetryManager
+   TelemetryManager& tmMgr = TelemetryManager::GetInstance();
+
+   // TM init
    TelemetryPacket_t tm_pkt = {0};
    tm_pkt.apid = TAKE_IMAGE_TM_APID;
    ImagePacket_t imgPkt;
@@ -43,7 +47,7 @@ void TransferImage(camera_fb_t *fb)
       // Copy image packet to telemetry packet
       memcpy(tm_pkt.data,(uint8_t *) &imgPkt, sizeof(ImagePacket_t));
       // Send telemetry packet
-      txRes = SendTelemetryPacket(&tm_pkt);
+      txRes = tmMgr.SendTelemetryPacket(&tm_pkt);
       if (txRes == false) {
          Serial.println("Aborting image transfer.");
          return;

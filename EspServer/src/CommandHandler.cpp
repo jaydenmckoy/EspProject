@@ -10,6 +10,9 @@ std::queue<DataPacket_t> commandQueue;
 
 void HandleCommand(CommandPacket_t *cmd)
 {
+   // Get instance of TelemetryManager
+   TelemetryManager& tmMgr = TelemetryManager::GetInstance();
+
    eCommandApid apid = (eCommandApid)cmd->apid;
    TelemetryPacket_t tm = {0};
    bool sendStatus = false;
@@ -21,7 +24,7 @@ void HandleCommand(CommandPacket_t *cmd)
       Serial.println("Delaying");
       delay(500);
       Serial.println("Sending telemetry");
-      sendStatus = SendTelemetryPacket(&tm);
+      sendStatus = tmMgr.SendTelemetryPacket(&tm);
       Serial.printf("Ping success: %d\n", sendStatus);
       break;
    case TAKE_TEST_IMAGE_CMD_APID:

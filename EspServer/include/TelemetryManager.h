@@ -4,7 +4,25 @@
 
 #include "Telemetry.h"
 
-bool SendTelemetryPacket(TelemetryPacket_t *tmpkt);
-bool SendTelemetry(eTelemetryApid apid, uint8_t * buf, size_t size);
+
+class TelemetryManager
+{
+   public:
+      static TelemetryManager& GetInstance(void);
+      bool SendTelemetryPacket(TelemetryPacket_t *tmpkt);
+      bool SendTelemetry(eTelemetryApid apid, uint8_t * buf, size_t size);
+   private:
+      // Private constructor to prevent direct instantiation
+      TelemetryManager(void) {};
+      // Private copy constructor and assignment operator to prevent copies
+      TelemetryManager(const TelemetryManager&) = delete;
+      TelemetryManager& operator=(const TelemetryManager&) = delete;
+
+      // Private destructor to prevent deletion through pointers
+      ~TelemetryManager() {
+         // Cleanup code, if needed
+      }
+};
+
 
 #endif

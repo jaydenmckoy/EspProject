@@ -40,3 +40,6 @@ EspServer/.vscode/ipch
 
 # Images
 *.jpg
+
+# output folder
+outputs/*

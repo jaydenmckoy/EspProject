@@ -35,10 +35,12 @@ void FileManager::GetFile(void)
       // size_t bytesRead = file.read(buf, fileSize);
       // Serial.printf("File size: %ld\n",fileSize);
       // Serial.printf("Bytes read: %ld\n",bytesRead);
+      // Get instance of TelemetryManager
+      TelemetryManager& tmMgr = TelemetryManager::GetInstance();
       // Start transfer
       TelemetryPacket_t pkt = {0};
       pkt.apid = FILE_TX_START_TM_APID;
-      SendTelemetryPacket(&pkt);
+      tmMgr.SendTelemetryPacket(&pkt);
       // Send data
       pkt.apid = GET_FILE_TM_APID;
       size_t bytesSent = 0;
@@ -54,7 +56,7 @@ void FileManager::GetFile(void)
          Serial.printf("Sending packet %ld of %ld\n",i,numPkts);
          numBytes = std::min(fileSize - bytesSent, pktSizeMax);
          file.read(pkt.data,numBytes);
-         if(SendTelemetryPacket(&pkt) == false)
+         if(tmMgr.SendTelemetryPacket(&pkt) == false)
          {
             Serial.println("Error sending telemetry. Aborting.");
             break;
@@ -67,7 +69,7 @@ void FileManager::GetFile(void)
       // End transfer
       delay(500);
       pkt.apid = FILE_TX_END_TM_APID;
-      SendTelemetryPacket(&pkt);
+      tmMgr.SendTelemetryPacket(&pkt);
 
       file.close();
       Serial.println("\nFile closed");

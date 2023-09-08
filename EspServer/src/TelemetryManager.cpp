@@ -3,12 +3,21 @@
 #include "Websocket.h"
 #include <algorithm>
 
-bool SendTelemetryPacket(TelemetryPacket_t * tmpkt)
+
+TelemetryManager& TelemetryManager::GetInstance(void)
+{
+   // Create the instance if it doesn't exist
+   static TelemetryManager instance;
+   return instance;
+}
+
+
+bool TelemetryManager::SendTelemetryPacket(TelemetryPacket_t * tmpkt)
 {
    return SendClientData((uint8_t *) tmpkt, sizeof(TelemetryPacket_t));
 }
 
-bool SendTelemetry(eTelemetryApid apid, uint8_t * buf, size_t size)
+bool TelemetryManager::SendTelemetry(eTelemetryApid apid, uint8_t * buf, size_t size)
 {
    Serial.printf("Sending telemetry: %d\n",apid);
    // Initialize packet
